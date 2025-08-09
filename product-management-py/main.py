@@ -1,11 +1,15 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from application.v1 import v1
+from application.login.v1 import v1
+from application.product.product import product
 
 app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"]
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 # @app.get("/")
 # def read_root():
@@ -15,4 +19,5 @@ app.add_middleware(
 # def read_item(item_id: int, q: str = None):
 #     return {"item_id": item_id, "q": q}
 
-app.include_router(v1,prefix='/v1/product')
+app.include_router(v1,prefix='/v1/auth')
+app.include_router(product,prefix='/v1/product')

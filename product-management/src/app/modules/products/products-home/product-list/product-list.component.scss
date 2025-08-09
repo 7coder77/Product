@@ -1,0 +1,32 @@
+.filter-bar {
+  background: #181a1b;
+  box-shadow: 0 2px 8px #00000030;
+  min-height: 48px;
+}
+.filter-bar .form-check-label {
+  color: #18e0d3;
+  font-weight: 600;
+}
+.filter-bar .btn-info {
+  background: #18e0d3 !important;
+  border: none;
+  color: #181a1b !important;
+  font-weight: 600;
+}
+.filter-bar .btn-dark {
+  background: #222 !important;
+  border: 1px solid #414141;
+  color: #b1b1b1 !important;
+}
+.filter-bar .btn-outline-secondary {
+  border: 1px solid #18e0d3 !important;
+  color: #18e0d3 !important;
+  background: transparent !important;
+}
+.filter-bar .input-group-text,
+.filter-bar .form-control,
+.filter-bar .form-select {
+  background: #111;
+  color: #fff;
+  border: 1px solid #18e0d3;
+}

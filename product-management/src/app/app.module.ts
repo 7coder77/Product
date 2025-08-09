@@ -7,13 +7,11 @@ import { RouterModule, Routes } from '@angular/router';
 
 const routes: Routes = [
   {
-    path: 'home',
+    path: '',
     loadChildren: () =>
-      import('./modules/products/products.module').then(m => m.ProductsModule)
+      import('./modules/products/home.module').then(m => m.HomeModule)
   },
-  // Other routes here
-  { path: '', redirectTo: '/home', pathMatch: 'full' }, // default route
-  { path: '**', redirectTo: '/home' } // wildcard route
+  { path: '**', redirectTo: '' } // wildcard route
 ];
 
 @NgModule({

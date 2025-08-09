@@ -11,10 +11,10 @@ export class HomePageComponent {
 
   }
   navManageProduct(){
-    this.router.navigateByUrl('/products');
+    this.router.navigate(['/products']);
   }
   navPriceOptimization(){
-    this.router.navigateByUrl('/price');
+    this.router.navigate(['/price']);
   }
 
 }

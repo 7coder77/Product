@@ -1,8 +1,55 @@
-<p>home-page works!</p>
-<div (click)="navManageProduct()">
-    create and manage product
-</div>
-<br>
-<div (click)="navPriceOptimization()">
-    price optimization
+<!-- app.component.html -->
+
+<div class="container-fluid bg-dark text-white min-vh-100 d-flex flex-column align-items-center justify-content-center">
+  <div class="text-center my-5">
+    <h1 class="display-4">BCGX</h1>
+    <h2 class="mt-4 mb-2">Price Optimization Tool</h2>
+    <p class="mb-5">
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
+      magna aliqua.
+    </p>
+  </div>
+  <div class="row justify-content-center w-100">
+    <div class="col-12 col-md-4 mb-4 d-flex">
+      <mat-card class="w-100 text-center shadow">
+        <mat-card-header>
+          <!-- Use any Material or Bootstrap icon here -->
+          <mat-icon style="font-size: 40px;">inventory_2</mat-icon>
+        </mat-card-header>
+        <mat-card-title> <span class="text-dark">Create and Manage Product</span></mat-card-title>
+        <mat-card-content>
+          <p class="text-dark">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
+            dolore magna aliqua.
+          </p>
+        </mat-card-content>
+        <mat-card-actions>
+          <button mat-button class="border-0">
+            <mat-icon (click)="navManageProduct()">arrow_forward</mat-icon>
+          </button>
+        </mat-card-actions>
+
+      </mat-card>
+    </div>
+    <div class="col-12 col-md-4 mb-4 d-flex">
+      <mat-card class="w-100 text-center shadow">
+        <mat-card-header>
+          <mat-icon style="font-size: 40px;">insights</mat-icon>
+        </mat-card-header>
+        <mat-card-title class="text-dark">Pricing Optimization</mat-card-title>
+        <mat-card-content>
+          <p class="text-dark">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
+            dolore magna aliqua.
+          </p>
+        </mat-card-content>
+        <mat-card-actions>
+          <button mat-button class="border-0">
+
+            <mat-icon (click)="navPriceOptimization()">arrow_forward</mat-icon>
+          </button>
+        </mat-card-actions>
+      </mat-card>
+    </div>
+  </div>
 </div>
