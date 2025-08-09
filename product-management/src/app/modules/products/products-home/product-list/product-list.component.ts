@@ -4,6 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ApiService } from 'src/app/shared/api.service';
 import { AddProductDialogComponent } from '../add-product-dialog/add-product-dialog.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { ForecastDialogComponent } from '../forecast-dialog/forecast-dialog.component';
 export interface Product {
   select: boolean; // for checkbox, optional
   name: string;
@@ -69,7 +70,7 @@ export class ProductListComponent implements OnInit {
 
   search = '';
   categoryFilter = '';
-  selection = new SelectionModel<Product>(true, []); // allow multi-selection
+  selection :any = new SelectionModel(true, []); // allow multi-selection
 
   /** Whether the number of selected elements matches the total number of rows. */
   isAllSelected() {
@@ -131,6 +132,7 @@ export class ProductListComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe((result) => {
+      console.log("add")
       if (result) {
         console.log('Product Added:', result);
         let payload = {
@@ -156,5 +158,52 @@ export class ProductListComponent implements OnInit {
       }
     });
   }
-  onAddSales(){}
+  editRow(row: any) {
+    const dialogRef = this.dialog.open(AddProductDialogComponent, {
+      width: '700px',
+      panelClass: 'custom-dialog-container',
+      data: row,
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      console.log("edirt")
+      if (result) {
+        console.log('Product Added:', result);
+        let payload = {
+          name: result.productName,
+          description: result.description,
+          cost_price: result.costPrice,
+          selling_price: result.sellingPrice,
+          stock: result.availableStock,
+          category_name: result.productCategory,
+          category_description: result.description,
+          is_active: true,
+          unitsold: result.unitsSold,
+        };
+        this.apiService.put('/v1/product/products/'+row?.id, payload).subscribe(
+          (response) => {
+            console.log('Product added successfully:', response);
+            this.getgridData();
+          },
+          (error) => {
+            console.error('Error adding product:', error);
+          }
+        );
+      }
+    });
+  }
+
+  onAddSales(){
+
+  }
+  onForecast(){
+    const dialogRef = this.dialog.open(ForecastDialogComponent, {
+      width: '700px',
+      panelClass: 'custom-dialog-container',
+      data:this.selection.selected
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+    });
+  }
 }

@@ -18,6 +18,9 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
 import { AddProductDialogComponent } from './add-product-dialog/add-product-dialog.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import {MatDialogModule} from '@angular/material/dialog';
+import { ForecastDialogComponent } from './forecast-dialog/forecast-dialog.component';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+
 
 const routes: Routes = [
   // { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -28,7 +31,8 @@ const routes: Routes = [
   declarations: [
     ProductListComponent,
     ProductHomeLayoutComponent,
-    AddProductDialogComponent
+    AddProductDialogComponent,
+    ForecastDialogComponent,
   ],
   imports: [
     CommonModule,
@@ -44,6 +48,7 @@ const routes: Routes = [
     MatCheckboxModule,
     ReactiveFormsModule,
     MatDialogModule,
+    MatProgressSpinnerModule,
     RouterModule.forChild(routes)
   ]
 })

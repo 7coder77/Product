@@ -6,5 +6,5 @@ import { Component } from '@angular/core';
   styleUrls: ['./product-home-layout.component.scss']
 })
 export class ProductHomeLayoutComponent {
-username="Aniruddha";
+username=localStorage.getItem('name') || 'Guest'; // Default to 'Guest' if no name is found
 }

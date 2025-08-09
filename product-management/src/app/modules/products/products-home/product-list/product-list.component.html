@@ -36,14 +36,17 @@
     <mat-icon class="fs-6 mt-1">add</mat-icon>Add New Product
   </button>
 
-  <button class="btn btn-dark btn-sm d-flex align-items-center" style="background:#2b2b2b;">
+  <button class="btn btn-dark btn-sm d-flex align-items-center" [ngClass]="{'border-1':selection.selected.length > 0}" [disabled]="selection.selected.length === 0" style="background:#2b2b2b;" (click)="onForecast()">
     <mat-icon class="fs-6 mt-1">calculate</mat-icon>Demand Forecast
   </button>
 
-  <button class="btn btn-info btn-sm me-2 d-flex align-items-center" style="background:#18e0d3; color:#222;" (click)="onAddSales()">
+  <button class="btn btn-info btn-sm me-2 d-flex align-items-center bg-green text-dark" (click)="onAddSales()">
     <mat-icon class="fs-6 mt-1">bar_chart</mat-icon>Add sales
   </button>
 
+</div>
+<div>
+  {{selection|json}}
 </div>
 
 <div class="container-fluid mt-3">
@@ -117,7 +120,7 @@
     <th mat-header-cell *matHeaderCellDef class="bg-dark text-light">Action</th>
     <td mat-cell *matCellDef="let row">
       <button mat-icon-button aria-label="View"><mat-icon>visibility</mat-icon></button>
-      <button mat-icon-button aria-label="Edit"><mat-icon>edit</mat-icon></button>
+      <button mat-icon-button aria-label="Edit" (click)="editRow(row)"><mat-icon>edit</mat-icon></button>
       <button mat-icon-button color="warn" aria-label="Delete" (click)="deleteRow(row)"><mat-icon>delete</mat-icon></button>
     </td>
   </ng-container>

@@ -161,3 +161,35 @@ def get_forecast(product_id: int, db: Session = Depends(get_db)):
         forecast_data.append({"price": round(p, 2), "demand": round(demand, 2)})
 
     return forecast_data
+
+@product.post("/forecast/multiple")
+def get_multiple_forecasts(payload: ForecastRequest, db: Session = Depends(get_db)):
+    forecasts = []
+
+    for pid in payload.products:
+        # Fetch sales history for this product
+        sales = db.query(ProductSales).filter(ProductSales.product_id == pid).all()
+        if not sales:
+            continue  # Skip products with no data
+
+        df = pd.DataFrame([{
+            "date": s.date,
+            "units_sold": float(s.units_sold),
+            "price": float(s.price)
+        } for s in sales])
+
+        prices = np.linspace(df["price"].min() * 0.9, df["price"].max() * 1.1, 10)
+        avg_units = df["units_sold"].mean()
+
+        # Your existing forecast logic
+        forecast_data = []
+        for p in prices:
+            demand = max(avg_units * (1 - (p - df["price"].mean()) / df["price"].mean() * 0.5), 0)
+            forecast_data.append({"price": round(p, 2), "demand": round(demand, 2)})
+        product = db.query(Product).filter(Product.id == pid).first()
+        forecasts.append({
+            "name": product.name,
+            "values": forecast_data
+        })
+
+    return forecasts

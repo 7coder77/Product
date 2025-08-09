@@ -49,3 +49,6 @@ class SalesCreate(BaseModel):
     date: date
     units_sold: int
     price: float
+
+class ForecastRequest(BaseModel):
+    products: list[int]  # List of product names for which to generate the forecast

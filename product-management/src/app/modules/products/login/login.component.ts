@@ -19,6 +19,7 @@ loginEmail = '';
     private router: Router
   ) {
     localStorage.removeItem('jwt_token');
+    localStorage.removeItem('name');
   }
 
   login() {
@@ -29,6 +30,7 @@ loginEmail = '';
     }).subscribe((response:any) => {
       console.log('Login response:', response);
       localStorage.setItem('jwt_token', response['access_token']);
+      localStorage.setItem('name', response['name']);
       this.router.navigate(['/home']); // Navigate to home after login
     }, (error) => {
       console.error('Login error:', error);

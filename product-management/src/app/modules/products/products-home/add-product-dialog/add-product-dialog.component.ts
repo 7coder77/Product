@@ -24,6 +24,18 @@ export class AddProductDialogComponent {
       availableStock: ['', Validators.required],
       unitsSold: ['', Validators.required]
     });
+    console.log('Received data:', this.data);
+    if (this.data) {
+      this.productForm.patchValue({
+        productName: this.data.name,
+        productCategory: this.data.category,
+        costPrice: this.data.cost_price,
+        sellingPrice: this.data.selling_price,
+        description: this.data.description,
+        availableStock: this.data.stock,
+        unitsSold: this.data.unitsold
+      });
+    }
   }
 
   onCancel(): void {

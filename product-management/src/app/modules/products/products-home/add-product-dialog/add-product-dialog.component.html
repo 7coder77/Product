@@ -1,6 +1,7 @@
 <div class="container-fluid bg-dark text-white p-4">
   <div class="d-flex justify-content-between align-items-center mb-3">
-    <h5 class="mb-0 text-green">Add New Products</h5>
+    <h5 class="mb-0 text-green" *ngIf="!data">Add New Products</h5>
+    <h5 class="mb-0 text-green" *ngIf="data">Edit Products</h5>
     <button type="button" class="btn-close btn-close-white" (click)="onCancel()"></button>
   </div>
 
@@ -46,6 +47,6 @@
 
   <div class="modal-footer bg-dark mt-3">
     <button type="button" class="btn btn-outline-light" (click)="onCancel()">Cancel</button>
-    <button type="button" class="btn bg-green" [disabled]="productForm.invalid" (click)="onAdd()">Add</button>
+    <button type="button" class="btn bg-green" [disabled]="productForm.invalid" (click)="onAdd()">{{data?"Edit":"Add"}}</button>
   </div>
 </div>

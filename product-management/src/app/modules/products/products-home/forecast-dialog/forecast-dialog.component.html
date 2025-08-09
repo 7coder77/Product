@@ -1,0 +1,8 @@
+<div class="container-fluid bg-dark text-white p-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h5 class="mb-0 text-green">Forecast</h5>
+    <button type="button" class="btn-close btn-close-white" (click)="onCancel()"></button>
+  </div>
+<div #chart [ngClass]="{'d-none':loader,'d-block':!loader}"></div>
+<mat-spinner [ngClass]="{'d-none':!loader,'d-block':loader}"></mat-spinner>
+</div>
