@@ -1,6 +1,9 @@
 import { SelectionModel } from '@angular/cdk/collections';
 import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { ApiService } from 'src/app/shared/api.service';
+import { AddProductDialogComponent } from '../add-product-dialog/add-product-dialog.component';
+import { MatSnackBar } from '@angular/material/snack-bar';
 export interface Product {
   select: boolean; // for checkbox, optional
   name: string;
@@ -21,40 +24,50 @@ const ELEMENT_DATA: Product[] = [
     selling_price: 3.3,
     description: 'Sed do eiusmod tpor incididunt...',
     stock: '21,200',
-    sold: 653121
-  }
+    sold: 653121,
+  },
   // Add more rows as needed
 ];
 
 @Component({
   selector: 'app-product-list',
   templateUrl: './product-list.component.html',
-  styleUrls: ['./product-list.component.scss']
+  styleUrls: ['./product-list.component.scss'],
 })
 export class ProductListComponent implements OnInit {
-
   ngOnInit(): void {
-    this.getgridData()
+    this.getgridData();
   }
 
-  constructor(private apiService: ApiService) {}
+  constructor(
+    private apiService: ApiService,
+    private dialog: MatDialog,
+    private _snackbar: MatSnackBar // Assuming you have MatSnackBar for notifications
+  ) {}
 
   getgridData() {
     // Call your API service to fetch data
-    this.apiService.get<Product[]>('/v1/product/list').subscribe(data => {
+    this.apiService.get<Product[]>('/v1/product/list').subscribe((data) => {
       this.dataSource = data;
       this.filteredData = [...this.dataSource];
     });
   }
 
-
   displayedColumns: string[] = [
-    'select', 'name', 'category', 'cost', 'selling', 'desc', 'stock', 'sold', 'action'
+    'select',
+    'name',
+    'category',
+    'cost',
+    'selling',
+    'desc',
+    'stock',
+    'sold',
+    'action',
   ];
   dataSource = ELEMENT_DATA;
   filteredData: Product[] = [...this.dataSource];
 
-search = '';
+  search = '';
   categoryFilter = '';
   selection = new SelectionModel<Product>(true, []); // allow multi-selection
 
@@ -67,9 +80,9 @@ search = '';
 
   /** Selects all rows if they are not all selected; otherwise clear selection. */
   masterToggle() {
-    this.isAllSelected() ?
-      this.selection.clear() :
-      this.dataSource.forEach(row => this.selection.select(row));
+    this.isAllSelected()
+      ? this.selection.clear()
+      : this.dataSource.forEach((row) => this.selection.select(row));
   }
 
   /** The array of selected data rows:  */
@@ -88,7 +101,6 @@ search = '';
     // });
   }
 
-
   clearSearch() {
     this.search = '';
     this.applyFilter();
@@ -98,8 +110,51 @@ search = '';
     window.history.back();
   }
 
+  deleteRow(row: any) {
+    this.apiService.delete(`/v1/product/products/${row?.id}`).subscribe(
+      () => {
+        console.log('Product deleted successfully:', row.name);
+        this.getgridData(); // Refresh the grid data after deletion
+      },
+      (error) => {
+        console.error('Error deleting product:', error);
+        this._snackbar.open(error, 'close');
+      }
+    );
+  }
+
   onAddProduct() {
     // Open dialog or navigate to add product form
-    alert('Add New Product clicked!');
+    const dialogRef = this.dialog.open(AddProductDialogComponent, {
+      width: '700px',
+      panelClass: 'custom-dialog-container',
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        console.log('Product Added:', result);
+        let payload = {
+          name: result.productName,
+          description: result.description,
+          cost_price: result.costPrice,
+          selling_price: result.sellingPrice,
+          stock: result.availableStock,
+          category_name: result.productCategory,
+          category_description: result.description,
+          is_active: true,
+          unitsold: result.unitsSold,
+        };
+        this.apiService.post('/v1/product/products', payload).subscribe(
+          (response) => {
+            console.log('Product added successfully:', response);
+            this.getgridData();
+          },
+          (error) => {
+            console.error('Error adding product:', error);
+          }
+        );
+      }
+    });
   }
+  onAddSales(){}
 }

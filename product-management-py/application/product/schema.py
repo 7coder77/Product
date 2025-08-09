@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 from typing import Optional
+from datetime import date
 
 class CategoryBase(BaseModel):
     name: str
@@ -41,3 +42,10 @@ class ProductUpdate(BaseModel):
     stock: Optional[int] = None
     category_name: Optional[str] = None
     is_active: Optional[bool] = None
+
+
+class SalesCreate(BaseModel):
+    product_id: int
+    date: date
+    units_sold: int
+    price: float

@@ -8,6 +8,8 @@ from sqlalchemy.orm import Session, joinedload
 from .models import *
 from utils.database import engine,SessionLocal  
 from utils.auth import validate_token
+import pandas as pd
+import numpy as np
 
 Base.metadata.create_all(bind=engine)
 product=APIRouter()
@@ -30,7 +32,8 @@ def getAllProducts(token: str = Header(..., description="JWT Token"),decoded=Dep
             "cost_price": p.cost_price,
             "selling_price": p.selling_price,
             "stock": p.stock,
-            "category": p.category.name if p.category else None
+            "category": p.category.name if p.category else None,
+            "unitsold": p.unitsold
         }
         for p in products
     ]
@@ -115,3 +118,46 @@ def search_products(
         raise HTTPException(status_code=404, detail="No products found matching the name")
 
     return results
+
+@product.post("/sales")
+def add_sales_record(sales_data: SalesCreate, db: Session = Depends(get_db)):
+    # Create a new sales record
+    new_sale = ProductSales(
+        product_id=sales_data.product_id,
+        date=sales_data.date,
+        units_sold=sales_data.units_sold,
+        price=sales_data.price
+    )
+
+    db.add(new_sale)
+    db.commit()
+    db.refresh(new_sale)
+
+    return {"message": "Sales record added successfully", "sale_id": new_sale.id}
+
+
+@product.get("/forecast/{product_id}")
+def get_forecast(product_id: int, db: Session = Depends(get_db)):
+    # 1. Fetch historical data
+    sales = db.query(ProductSales).filter(ProductSales.product_id == product_id).all()
+
+    if not sales:
+        return {"error": "No sales history found"}
+
+    df = pd.DataFrame([{
+        "date": s.date,
+        "units_sold": float(s.units_sold),
+        "price": float(s.price)
+    } for s in sales])
+
+    # 2. Simple demand-price simulation
+    prices = np.linspace(df["price"].min() * 0.9, df["price"].max() * 1.1, 10)
+    forecast_data = []
+    avg_units = df["units_sold"].mean()
+
+    for p in prices:
+        # Fake formula: demand decreases as price increases
+        demand = max(avg_units * (1 - (p - df["price"].mean()) / df["price"].mean() * 0.5), 0)
+        forecast_data.append({"price": round(p, 2), "demand": round(demand, 2)})
+
+    return forecast_data

@@ -15,6 +15,9 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { FormsModule } from '@angular/forms';
 import {MatCheckboxModule} from '@angular/material/checkbox';
+import { AddProductDialogComponent } from './add-product-dialog/add-product-dialog.component';
+import { ReactiveFormsModule } from '@angular/forms';
+import {MatDialogModule} from '@angular/material/dialog';
 
 const routes: Routes = [
   // { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -24,7 +27,8 @@ const routes: Routes = [
 @NgModule({
   declarations: [
     ProductListComponent,
-    ProductHomeLayoutComponent
+    ProductHomeLayoutComponent,
+    AddProductDialogComponent
   ],
   imports: [
     CommonModule,
@@ -38,6 +42,8 @@ const routes: Routes = [
     MatInputModule,
     MatFormFieldModule,
     MatCheckboxModule,
+    ReactiveFormsModule,
+    MatDialogModule,
     RouterModule.forChild(routes)
   ]
 })

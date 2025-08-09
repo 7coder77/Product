@@ -1,0 +1,51 @@
+<div class="container-fluid bg-dark text-white p-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h5 class="mb-0 text-green">Add New Products</h5>
+    <button type="button" class="btn-close btn-close-white" (click)="onCancel()"></button>
+  </div>
+
+  <div class="modal-body bg-dark text-white">
+    <form [formGroup]="productForm" class="row g-3">
+      <div class="col-12">
+        <label class="form-label">Product Name :</label>
+        <input type="text" formControlName="productName" class="form-control" placeholder="Enter Product Name">
+      </div>
+
+      <div class="col-12">
+        <label class="form-label">Product Category :</label>
+        <input type="text" formControlName="productCategory" class="form-control" placeholder="Enter Product Category">
+      </div>
+
+      <div class="col-md-6">
+        <label class="form-label">Cost Price :</label>
+        <input type="number" formControlName="costPrice" class="form-control" placeholder="XX,XXX,XXX">
+      </div>
+
+      <div class="col-md-6">
+        <label class="form-label">Selling Price :</label>
+        <input type="number" formControlName="sellingPrice" class="form-control" placeholder="XX,XXX,XXX">
+      </div>
+
+      <div class="col-12">
+        <label class="form-label">Description :</label>
+        <textarea rows="3" formControlName="description" class="form-control"
+          placeholder="Enter Description"></textarea>
+      </div>
+
+      <div class="col-md-6">
+        <label class="form-label">Available Stock :</label>
+        <input type="number" formControlName="availableStock" class="form-control" placeholder="XX,XXX,XXX">
+      </div>
+
+      <div class="col-md-6">
+        <label class="form-label">Units Sold :</label>
+        <input type="number" formControlName="unitsSold" class="form-control" placeholder="XX,XXX,XXX">
+      </div>
+    </form>
+  </div>
+
+  <div class="modal-footer bg-dark mt-3">
+    <button type="button" class="btn btn-outline-light" (click)="onCancel()">Cancel</button>
+    <button type="button" class="btn bg-green" [disabled]="productForm.invalid" (click)="onAdd()">Add</button>
+  </div>
+</div>

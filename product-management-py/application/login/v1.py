@@ -31,7 +31,7 @@ def login(request : LoginSchema, db: Session = Depends(get_db)):
         raise HTTPException(status_code=400, detail="Invalid credentials")
 
     access_token = create_access_token(data={"sub": user.email,"name": user.name})
-    return {"access_token": access_token, "token_type": "bearer"}
+    return {"access_token": access_token, "token_type": "bearer", "name": user.name, "email": user.email}
 
 @v1.post("/reg", status_code=status.HTTP_201_CREATED ,tags=['Login'])
 def register_user(request: RegisterRequest, db: Session = Depends(get_db)):
