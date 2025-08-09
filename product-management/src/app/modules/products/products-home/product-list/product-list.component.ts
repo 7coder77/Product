@@ -1,12 +1,13 @@
 import { SelectionModel } from '@angular/cdk/collections';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { ApiService } from 'src/app/shared/api.service';
 export interface Product {
   select: boolean; // for checkbox, optional
   name: string;
   category: string;
-  cost: number;
-  selling: number;
-  desc: string;
+  cost_price: number;
+  selling_price: number;
+  description: string;
   stock: string;
   sold: number;
 }
@@ -14,21 +15,11 @@ export interface Product {
 const ELEMENT_DATA: Product[] = [
   {
     select: false,
-    name: 'Gio - Note Pad',
-    category: 'Stationary',
-    cost: 1.2,
-    selling: 2.7,
-    desc: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit...',
-    stock: '1,21,2123',
-    sold: 131244
-  },
-  {
-    select: false,
     name: 'Jazz - Sticky Notes',
     category: 'Stationary',
-    cost: 2.5,
-    selling: 3.3,
-    desc: 'Sed do eiusmod tpor incididunt...',
+    cost_price: 2.5,
+    selling_price: 3.3,
+    description: 'Sed do eiusmod tpor incididunt...',
     stock: '21,200',
     sold: 653121
   }
@@ -40,7 +31,23 @@ const ELEMENT_DATA: Product[] = [
   templateUrl: './product-list.component.html',
   styleUrls: ['./product-list.component.scss']
 })
-export class ProductListComponent {
+export class ProductListComponent implements OnInit {
+
+  ngOnInit(): void {
+    this.getgridData()
+  }
+
+  constructor(private apiService: ApiService) {}
+
+  getgridData() {
+    // Call your API service to fetch data
+    this.apiService.get<Product[]>('/v1/product/list').subscribe(data => {
+      this.dataSource = data;
+      this.filteredData = [...this.dataSource];
+    });
+  }
+
+
   displayedColumns: string[] = [
     'select', 'name', 'category', 'cost', 'selling', 'desc', 'stock', 'sold', 'action'
   ];

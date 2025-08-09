@@ -11,7 +11,8 @@ export class HomePageComponent {
 
   }
   navManageProduct(){
-    this.router.navigate(['/products']);
+    // this.router.navigate(['/products']);
+    this.router.navigateByUrl('/products');
   }
   navPriceOptimization(){
     this.router.navigate(['/price']);
