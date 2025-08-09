@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.params import Query
+from sqlalchemy import distinct
 from .schema import *
 # from .service import *
 from utils.auth import *
@@ -60,7 +61,8 @@ def create_product(product: ProductCreate,token: str = Header(..., description="
         selling_price=product.selling_price,
         stock=product.stock,
         category_id=category.id,
-        is_active=product.is_active
+        is_active=product.is_active,
+        unitsold=product.unitsSold
     )
     db.add(new_product)
     db.commit()
@@ -120,7 +122,7 @@ def search_products(
     return results
 
 @product.post("/sales")
-def add_sales_record(sales_data: SalesCreate, db: Session = Depends(get_db)):
+def add_sales_record(sales_data: SalesCreate,decoded=Depends(validate_token), db: Session = Depends(get_db)):
     # Create a new sales record
     new_sale = ProductSales(
         product_id=sales_data.product_id,
@@ -137,7 +139,7 @@ def add_sales_record(sales_data: SalesCreate, db: Session = Depends(get_db)):
 
 
 @product.get("/forecast/{product_id}")
-def get_forecast(product_id: int, db: Session = Depends(get_db)):
+def get_forecast(product_id: int,decoded=Depends(validate_token), db: Session = Depends(get_db)):
     # 1. Fetch historical data
     sales = db.query(ProductSales).filter(ProductSales.product_id == product_id).all()
 
@@ -163,14 +165,15 @@ def get_forecast(product_id: int, db: Session = Depends(get_db)):
     return forecast_data
 
 @product.post("/forecast/multiple")
-def get_multiple_forecasts(payload: ForecastRequest, db: Session = Depends(get_db)):
+def get_multiple_forecasts(payload: ForecastRequest,decoded=Depends(validate_token), db: Session = Depends(get_db)):
     forecasts = []
 
     for pid in payload.products:
         # Fetch sales history for this product
+        product = db.query(Product).filter(Product.id == pid).first()
         sales = db.query(ProductSales).filter(ProductSales.product_id == pid).all()
         if not sales:
-            continue  # Skip products with no data
+            raise HTTPException(status_code=404, detail=f"No sales history found for product ID {product.name}")    
 
         df = pd.DataFrame([{
             "date": s.date,
@@ -193,3 +196,9 @@ def get_multiple_forecasts(payload: ForecastRequest, db: Session = Depends(get_d
         })
 
     return forecasts
+
+
+@product.get("/categories/distinct")
+def get_distinct_categories(decoded=Depends(validate_token),db: Session = Depends(get_db)):
+    results = db.query(distinct(Category.name)).all()
+    return [r[0] for r in results]

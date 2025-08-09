@@ -2,37 +2,35 @@
 <!-- Toolbar Section -->
 
 <div class="filter-bar d-flex align-items-center px-2 py-2 bg-dark text-light" style="gap: 10px;">
-  <button class="btn btn-link text-secondary p-0 me-2" style="font-weight:bold;" (click)="onBack()">
-    <span class="me-1">&laquo;</span>Back
+  <button class="btn text-light p-0 me-2 fw-normal border-right border-2 px-3" (click)="onBack()">
+    <span class="me-1 text-green fs-4 ">&laquo;</span>Back
   </button>
-  <span class="me-3" style="border-right:1px solid #333; padding-right:12px;">Create and Manage Product</span>
+  <!-- <span class="fw-bold">|</span> -->
+  <span class="me-3 border-right" style="padding-right:12px;">Create and Manage Product</span>
 
   <div class="form-check form-switch me-3">
     <input class="form-check-input" type="checkbox" id="switchCheckChecked" checked />
-    <label class="form-check-label small" for="switchCheckChecked" style="color:#18e0d3;font-weight:bold;">With Demand Forecast</label>
+    <label class="form-check-label small fw-bold" for="switchCheckChecked" style="color:#18e0d3">With Demand Forecast</label>
   </div>
 
   <!-- Search Bar -->
   <div class="input-group input-group-sm me-2" style="max-width:175px;">
-    <span class="input-group-text bg-transparent border-secondary" id="basic-addon1">
+    <input type="text" class="form-control bg-dark text-light border-secondary" placeholder="Search" aria-label="Search" aria-describedby="basic-addon1" [(ngModel)]="search" />
+    <span class="input-group-text bg-transparent border-secondary" id="basic-addon1" (click)="searchProduct()">
       <mat-icon style="color:#18e0d3;" class="fs-6">search</mat-icon>
     </span>
-    <input type="text" class="form-control bg-dark text-light border-secondary" placeholder="Search" aria-label="Search" aria-describedby="basic-addon1" />
   </div>
 
   <span class="me-1">Category:</span>
-  <select class="form-select form-select-sm me-2 bg-dark text-light border-secondary" style="width:auto;">
-    <option>Stationary</option>
-    <option>Electronics</option>
-    <option>Clothing</option>
-    <option>Other</option>
+  <select class="form-select form-select-sm me-2 bg-dark text-light border-secondary" style="width:auto;" [(ngModel)]="categoryFilter">
+    <option *ngFor="let item of categories">{{item}}</option>
   </select>
 
-  <button class="btn btn-outline-secondary btn-sm me-2 d-flex align-items-center">
+  <button class="btn btn-outline-secondary btn-sm me-2 d-flex align-items-center" (click)="applyFilter()">
     <mat-icon class="fs-6 mt-1">filter_alt</mat-icon>Filter
   </button>
 
-  <button class="btn btn-info btn-sm me-2 d-flex align-items-center" style="background:#18e0d3; color:#222;" (click)="onAddProduct()">
+  <button class="btn btn-info btn-sm me-2 d-flex align-items-center bg-green text-dark" (click)="onAddProduct()">
     <mat-icon class="fs-6 mt-1">add</mat-icon>Add New Product
   </button>
 
@@ -40,13 +38,10 @@
     <mat-icon class="fs-6 mt-1">calculate</mat-icon>Demand Forecast
   </button>
 
-  <button class="btn btn-info btn-sm me-2 d-flex align-items-center bg-green text-dark" (click)="onAddSales()">
+  <button class="btn btn-info btn-sm me-2 d-flex align-items-center bg-green text-dark" [disabled]="selection.selected.length != 1" (click)="onAddSales()">
     <mat-icon class="fs-6 mt-1">bar_chart</mat-icon>Add sales
   </button>
 
-</div>
-<div>
-  {{selection|json}}
 </div>
 
 <div class="container-fluid mt-3">

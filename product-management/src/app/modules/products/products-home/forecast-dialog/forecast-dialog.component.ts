@@ -6,6 +6,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import * as d3 from 'd3';
 import { ApiService } from 'src/app/shared/api.service';
 
@@ -18,7 +19,8 @@ export class ForecastDialogComponent implements OnInit {
   constructor(
     public dialogRef: MatDialogRef<ForecastDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
-    private apiservice: ApiService
+    private apiservice: ApiService,
+    private snackbar: MatSnackBar
   ) {
     console.log('Received data:', this.data);
   }
@@ -60,7 +62,8 @@ export class ForecastDialogComponent implements OnInit {
           this.createChart(response);
         },
         (error) => {
-          console.error('Error fetching forecast data:', error);
+          console.log('Error fetching forecast data:', error);
+          this.snackbar.open(error?.error?.detail,"close")
         }
       );
   }

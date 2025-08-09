@@ -5,6 +5,7 @@ import { ApiService } from 'src/app/shared/api.service';
 import { AddProductDialogComponent } from '../add-product-dialog/add-product-dialog.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ForecastDialogComponent } from '../forecast-dialog/forecast-dialog.component';
+import { AddSalesDialogComponent } from '../add-sales-dialog/add-sales-dialog.component';
 export interface Product {
   select: boolean; // for checkbox, optional
   name: string;
@@ -36,24 +37,7 @@ const ELEMENT_DATA: Product[] = [
   styleUrls: ['./product-list.component.scss'],
 })
 export class ProductListComponent implements OnInit {
-  ngOnInit(): void {
-    this.getgridData();
-  }
-
-  constructor(
-    private apiService: ApiService,
-    private dialog: MatDialog,
-    private _snackbar: MatSnackBar // Assuming you have MatSnackBar for notifications
-  ) {}
-
-  getgridData() {
-    // Call your API service to fetch data
-    this.apiService.get<Product[]>('/v1/product/list').subscribe((data) => {
-      this.dataSource = data;
-      this.filteredData = [...this.dataSource];
-    });
-  }
-
+  categories: string[] = [];
   displayedColumns: string[] = [
     'select',
     'name',
@@ -70,7 +54,34 @@ export class ProductListComponent implements OnInit {
 
   search = '';
   categoryFilter = '';
-  selection :any = new SelectionModel(true, []); // allow multi-selection
+  selection :any = new SelectionModel(true, []);
+  ngOnInit(): void {
+    this.getgridData();
+    this.apiService.get('/v1/product/categories/distinct').subscribe(
+      (response: any) => {
+        this.categories = response;
+      },
+      error => {
+        console.error('Error fetching categories:', error);
+        this._snackbar.open(error?.error?.detail, 'close');
+      });
+  }
+  rowCopy:any[]=[];
+
+  constructor(
+    private apiService: ApiService,
+    private dialog: MatDialog,
+    private _snackbar: MatSnackBar // Assuming you have MatSnackBar for notifications
+  ) {}
+
+  getgridData() {
+    // Call your API service to fetch data
+    this.apiService.get<Product[]>('/v1/product/list').subscribe((data) => {
+      this.dataSource = data;
+      this.rowCopy=[...this.dataSource]
+    });
+  }
+
 
   /** Whether the number of selected elements matches the total number of rows. */
   isAllSelected() {
@@ -86,25 +97,27 @@ export class ProductListComponent implements OnInit {
       : this.dataSource.forEach((row) => this.selection.select(row));
   }
 
-  /** The array of selected data rows:  */
   get selectedRowsArray() {
     return this.selection.selected; // This is the array of checked row objects
   }
 
   applyFilter() {
-    // this.filteredData = this.dataSource.filter(row => {
-    //   const matchesCategory = this.categoryFilter ? row.productCategory === this.categoryFilter : true;
-    //   const matchesSearch = this.search ? (
-    //     row.productName.toLowerCase().includes(this.search.toLowerCase()) ||
-    //     row.description.toLowerCase().includes(this.search.toLowerCase())
-    //   ) : true;
-    //   return matchesCategory && matchesSearch;
-    // });
+    this.filteredData = this.rowCopy.filter((item) => {
+      const matchesCategory = this.categoryFilter ? item.category === this.categoryFilter : true;
+      return matchesCategory;
+    });
+    this.dataSource = [...this.filteredData];
+    console.log('Filtered Data:', this.dataSource,this.rowCopy);
   }
 
   clearSearch() {
     this.search = '';
     this.applyFilter();
+  }
+  searchProduct() {
+    this.dataSource = this.rowCopy.filter((item) => {
+      return item.name.toLowerCase().includes(this.search.toLowerCase());
+    });
   }
 
   onBack() {
@@ -153,6 +166,7 @@ export class ProductListComponent implements OnInit {
           },
           (error) => {
             console.error('Error adding product:', error);
+            this._snackbar.open(error?.error?.detail,"close")
           }
         );
       }
@@ -166,9 +180,7 @@ export class ProductListComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe((result) => {
-      console.log("edirt")
       if (result) {
-        console.log('Product Added:', result);
         let payload = {
           name: result.productName,
           description: result.description,
@@ -187,6 +199,7 @@ export class ProductListComponent implements OnInit {
           },
           (error) => {
             console.error('Error adding product:', error);
+            this._snackbar.open(error?.error?.detail,"close")
           }
         );
       }
@@ -194,7 +207,29 @@ export class ProductListComponent implements OnInit {
   }
 
   onAddSales(){
+    const dialogRef = this.dialog.open(AddSalesDialogComponent, {
+      width: '700px',
+      panelClass: 'custom-dialog-container',
+      data: this.selection.selected[0]
+    });
 
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        result['product_id'] = this.selection.selected[0].id;
+        this.apiService.post('/v1/product/sales', result).subscribe(
+          (response) => {
+            console.log('Product added successfully:', response);
+            this._snackbar.open('Sales data added successfully', 'Close')
+            this.getgridData();
+          },
+          (error) => {
+            console.error('Error adding product:', error);
+            this._snackbar.open(error?.error?.details, 'Close')
+
+          }
+        );
+      }
+    });
   }
   onForecast(){
     const dialogRef = this.dialog.open(ForecastDialogComponent, {

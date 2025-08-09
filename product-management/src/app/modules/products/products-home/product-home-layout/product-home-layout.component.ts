@@ -6,5 +6,10 @@ import { Component } from '@angular/core';
   styleUrls: ['./product-home-layout.component.scss']
 })
 export class ProductHomeLayoutComponent {
-username=localStorage.getItem('name') || 'Guest'; // Default to 'Guest' if no name is found
+username=localStorage.getItem('name') || 'Guest';
+// Default to 'Guest' if no name is found
+logout(){
+  localStorage.removeItem('jwt_token');
+  window.location.reload();
+}
 }

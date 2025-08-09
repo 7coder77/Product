@@ -20,6 +20,7 @@ class ProductCreate(BaseModel):
     category_name: str  # category will be provided by name
     category_description: Optional[str] = None
     is_active: bool = True
+    unitsSold:int = 0
 
 class ProductResponse(BaseModel):
     id: int

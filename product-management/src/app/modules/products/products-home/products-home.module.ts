@@ -20,7 +20,8 @@ import { ReactiveFormsModule } from '@angular/forms';
 import {MatDialogModule} from '@angular/material/dialog';
 import { ForecastDialogComponent } from './forecast-dialog/forecast-dialog.component';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
-
+import { AddSalesDialogComponent } from './add-sales-dialog/add-sales-dialog.component';
+import { MatMenuModule } from '@angular/material/menu';
 
 const routes: Routes = [
   // { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -33,6 +34,7 @@ const routes: Routes = [
     ProductHomeLayoutComponent,
     AddProductDialogComponent,
     ForecastDialogComponent,
+    AddSalesDialogComponent,
   ],
   imports: [
     CommonModule,
@@ -49,6 +51,7 @@ const routes: Routes = [
     ReactiveFormsModule,
     MatDialogModule,
     MatProgressSpinnerModule,
+    MatMenuModule,
     RouterModule.forChild(routes)
   ]
 })
